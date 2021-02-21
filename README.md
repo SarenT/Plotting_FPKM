@@ -2,6 +2,7 @@
 Plotting published expression data (in FPKM) for different slices of Drosophila Melanogaster embryos. 
 
 Shiny_app.R: the shiny app, which plots one gene at a time from a drop-down list
+
 plot_slices.r: Rscript to plot genes from a list in different panels (here I plot the hox genes, output plot in hox_genes.pdf) 
 
 
