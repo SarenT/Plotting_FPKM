@@ -1,56 +1,43 @@
 library(shiny)
-
+library(data.table)
+library(gridExtra)
+library(grid)
+library(ggplot2)
+library(lattice)
+library(plyr) 
+library(ggplot2) 
+library(reshape2) 
+library(tidyverse) 
+library(ggpubr)
+library("stringr")
+RPKM <-fread("PLoS_data.txt", sep="auto",head=T)
+RPKM_60u <- RPKM %>% dplyr:: select(V1,starts_with("60"))
+RPKM.df <- setNames(melt(RPKM_60u), c('rows', 'vars', 'values'))
+#RPKM.df <-RPKM_25u %>% gather(vars,values,-X )
+test <- plyr::arrange(RPKM.df, rows)
+emb=c(substr(test$vars,5, 8))
+slice=c(substr(test$vars,10, 13))
+test<- test %>% cbind(emb,slice)
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Hello Shiny!"),
-  
-  # Sidebar layout with input and output definitions ----
-  sidebarLayout(
-    
-    # Sidebar panel for inputs ----
-    sidebarPanel(
-      
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
-      
-    ),
-    
+  titlePanel("Expression in the Drosophila Embryo"),
+  #textInput("inputId", "Input the name of a Drosophila Gene", value = ""),
+  selectInput("Variable", "Gene:",
+              c(RPKM$V1),multiple = FALSE),
     # Main panel for displaying outputs ----
-    mainPanel(
-      
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
-      
-    )
+    mainPanel(plotOutput("distPlot"))
   )
-)
 
+# Define server logic required to draw a histogram ----
 server <- function(input, output) {
-  
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
   output$distPlot <- renderPlot({
-    
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    hist(x, breaks = bins, col = "#75AADB", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
-    
+    ggplot(subset(test,rows ==input$Variable), aes(x = slice, y = rows, fill = values)) + facet_grid(emb ~ ., scales='free_x', space="free_x") + geom_tile() + scale_fill_gradient(low = "#FFFFFF",high = "#012345")+ theme(plot.title = element_text(hjust = 0.5),axis.title.y=element_blank(),axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ggtitle(paste(input$Variable))
   })
   
 }
+
+# Create Shiny app ----
+shinyApp(ui = ui, server = server)
 
