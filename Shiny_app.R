@@ -7,7 +7,6 @@ library(lattice)
 library(plyr) 
 library(ggplot2) 
 library(reshape2) 
-library(tidyverse) 
 library(ggpubr)
 library("stringr")
 RPKM <-fread("PLoS_data.txt", sep="auto",head=T)
@@ -18,19 +17,14 @@ test <- plyr::arrange(RPKM.df, rows)
 emb=c(substr(test$vars,5, 8))
 slice=c(substr(test$vars,10, 13))
 test<- test %>% cbind(emb,slice)
-# Define UI for app that draws a histogram ----
 ui <- fluidPage(
-  
-  # App title ----
   titlePanel("Expression in the Drosophila Embryo"),
   #textInput("inputId", "Input the name of a Drosophila Gene", value = ""),
   selectInput("Variable", "Gene:",
               c(RPKM$V1),multiple = FALSE),
-    # Main panel for displaying outputs ----
     mainPanel(plotOutput("distPlot"))
   )
 
-# Define server logic required to draw a histogram ----
 server <- function(input, output) {
   output$distPlot <- renderPlot({
     ggplot(subset(test,rows ==input$Variable), aes(x = slice, y = rows, fill = values)) + facet_grid(emb ~ ., scales='free_x', space="free_x") + geom_tile() + scale_fill_gradient(low = "#FFFFFF",high = "#012345")+ theme(plot.title = element_text(hjust = 0.5),axis.title.y=element_blank(),axis.ticks.y = element_blank(), axis.text.y = element_blank()) + ggtitle(paste(input$Variable))
@@ -38,6 +32,4 @@ server <- function(input, output) {
   
 }
 
-# Create Shiny app ----
 shinyApp(ui = ui, server = server)
-
