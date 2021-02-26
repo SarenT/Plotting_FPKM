@@ -30,3 +30,4 @@ for (i in 1:length(names_list)){
 # why not facets? I think if I use facets for all, then the filling will be relative to the highest expression gene, but I am not sure. 
 main<-grid.arrange(grobs=plotlist,ncol=length(names_list))
 ggsave("hox_genes.pdf",main,width=40,height=5)
+
