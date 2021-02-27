@@ -23,7 +23,7 @@ ggplot(subset(test,rows %in% names_list & NI=="60u"), aes(x = slice, y = emb, fi
 ggsave("hox_genes_60.pdf",width=40,height=5)
 ggplot(subset(test,rows %in% names_list & NI=="25u"), aes(x = slice, y = emb, fill = values)) + facet_grid(emb ~ rows, scales="free",space="free_x") +geom_tile() + scale_fill_gradient(low = "#FFFFFF",high = "#012345")+ theme(plot.title = element_text(hjust = 0.5),axis.title.y=element_blank(),axis.ticks.y = element_blank(), axis.text.y = element_blank())
 ggsave("hox_genes_25.pdf",width=40,height=5)
-#bar plot of average expression
+#bar-plot of average expression
 testx <- subset(test,rows %in% names_list & NI=="60u") %>% 
   group_by(rows,emb) %>% 
   dplyr::summarise(averageexp=mean(values,na.rm=T))
