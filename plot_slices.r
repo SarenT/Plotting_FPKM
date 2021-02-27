@@ -28,5 +28,9 @@ for (i in 1:length(names_list)){
   plotlist[[i]]=p
 }
 # why not facets? I think if I use facets for all, then the filling will be relative to the highest expression gene, but I am not sure. 
+# SarenT: that's not true, you can set separately see cheat sheet. Please use facets. Also since your project is sort of too small, can you make a nicer plot?
+# Can you include "25u" as well? And use summarise for a separate plot?
+
 main<-grid.arrange(grobs=plotlist,ncol=length(names_list))
 ggsave("hox_genes.pdf",main,width=40,height=5)
+
